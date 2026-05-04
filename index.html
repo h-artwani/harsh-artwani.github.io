@@ -284,7 +284,7 @@ section { padding: 100px 0; }
 .project-link:hover { color:var(--teal); border-color:var(--teal); }
 
 /* SKILLS */
-.skills-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:20px; }
+.skills-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:20px; }
 .skill-card { background:var(--white); border:1px solid var(--line); border-radius:16px; padding:26px 22px; transition:all .3s; }
 .skill-card:hover { border-color:var(--purple); box-shadow:0 4px 20px rgba(91,79,207,.1); }
 .skill-card-header { display:flex; align-items:center; gap:10px; margin-bottom:18px; padding-bottom:14px; border-bottom:1px solid var(--line); }
@@ -359,14 +359,44 @@ footer span { color:var(--teal); }
 .fade-up { opacity:0; transform:translateY(28px); transition:opacity .8s cubic-bezier(.2,.7,.3,1), transform .8s cubic-bezier(.2,.7,.3,1); }
 .fade-up.visible { opacity:1; transform:translateY(0); }
 
+/* HAMBURGER */
+.hamburger {
+  display:none; flex-direction:column; justify-content:center; gap:5px;
+  width:36px; height:36px; cursor:pointer; background:none; border:none; padding:4px;
+}
+.hamburger span {
+  display:block; height:2px; background:var(--navy); border-radius:2px;
+  transition:all .3s;
+}
+.hamburger.open span:nth-child(1) { transform:translateY(7px) rotate(45deg); }
+.hamburger.open span:nth-child(2) { opacity:0; }
+.hamburger.open span:nth-child(3) { transform:translateY(-7px) rotate(-45deg); }
+
+.mobile-menu {
+  display:none; position:fixed; top:72px; left:0; right:0; z-index:99;
+  background:rgba(232,244,248,.98); backdrop-filter:blur(16px);
+  border-bottom:1px solid var(--line); padding:16px 28px 24px;
+  flex-direction:column; gap:4px;
+}
+.mobile-menu.open { display:flex; }
+.mobile-menu a {
+  font-size:16px; font-weight:500; color:var(--navy-dim);
+  text-decoration:none; padding:12px 0; border-bottom:1px solid var(--line);
+  transition:color .2s;
+}
+.mobile-menu a:last-child { border-bottom:none; }
+.mobile-menu a:hover { color:var(--purple); }
+
 /* RESPONSIVE */
 @media (max-width:1024px) {
   nav { padding:0 28px; }
   .nav-links { display:none; }
+  .hamburger { display:flex; }
   .hero, .container { padding-left:28px; padding-right:28px; }
   .hero { grid-template-columns:1fr; min-height:auto; padding-top:100px; gap:48px; }
   .hero-right { height:280px; }
   .about-grid, .edu-awards-grid, .contact-grid { grid-template-columns:1fr; gap:40px; }
+  .about-cards-grid { grid-template-columns:1fr; }
   .exp-item { grid-template-columns:1fr; gap:16px; }
   .exp-item::before { display:none; }
   .skills-grid { grid-template-columns:repeat(2,1fr); }
@@ -374,9 +404,10 @@ footer span { color:var(--teal); }
   .scroll-hint { display:none; }
 }
 @media (max-width:600px) {
-  .skills-grid { grid-template-columns:1fr; }
+  .skills-grid { grid-template-columns:repeat(2,1fr); }
   .hero-stats { flex-wrap:wrap; gap:24px; }
   .contact-links-grid { grid-template-columns:1fr; }
+  .hero-right { display:none; }
   footer { flex-direction:column; gap:8px; text-align:center; }
 }
 </style>
@@ -402,8 +433,19 @@ footer span { color:var(--teal); }
       Available for Opportunities
     </div>
     <a href="mailto:artwani.harsh12@gmail.com" class="hire-btn">Contact Me ✦</a>
+    <button class="hamburger" id="hamburger" aria-label="Toggle menu">
+      <span></span><span></span><span></span>
+    </button>
   </div>
 </nav>
+
+<div class="mobile-menu" id="mobileMenu">
+  <a href="#about" onclick="closeMobileMenu()">About</a>
+  <a href="#work" onclick="closeMobileMenu()">Experience</a>
+  <a href="#projects" onclick="closeMobileMenu()">Projects</a>
+  <a href="#skills" onclick="closeMobileMenu()">Stack</a>
+  <a href="#contact" onclick="closeMobileMenu()">Contact</a>
+</div>
 
 <!-- HERO -->
 <div style="max-width:1400px;margin:0 auto;position:relative;">
@@ -415,7 +457,7 @@ footer span { color:var(--teal); }
         I'm where distributed<br>systems meet<br>intelligent automation.
       </h1>
       <p class="hero-tagline">
-        Full-stack engineer with <strong>3 years at Paycom</strong> — building AI-powered backend services, scalable microservices on Kubernetes, and React frontends serving millions of enterprise users.
+        Full-stack engineer with <strong>3 years at Paycom</strong> — building AI-powered backend services, scalable microservices on Kubernetes, and React frontends serving millions of enterprise users. In my 5-9, I build <strong>open-source AI tooling</strong>.
       </p>
       <div class="hero-ctas">
         <a href="#work" class="btn-primary">View My Work →</a>
@@ -568,7 +610,7 @@ footer span { color:var(--teal); }
         <p class="project-sub">Multi-agent AI incident response system</p>
         <ul class="project-bullets">
           <li>Automatically investigates alerts &amp; correlates deployments to generate structured Root Cause Analysis reports via durable Temporal workflows.</li>
-          <li>Orchestrates parallel AI agents with human-in-the-loop approval signals and a real-time React dashboard over Server-Sent Events.</li>
+          <li>Orchestrates parallel AI agents with <strong>human-in-the-loop</strong> approval signals and a real-time React dashboard over <strong>Server-Sent Events</strong>.</li>
         </ul>
         <div class="project-stack">
           <span class="stack-tag">TypeScript</span><span class="stack-tag">React</span>
@@ -580,17 +622,20 @@ footer span { color:var(--teal); }
       <article class="project-card fade-up">
         <div class="project-header">
           <span class="project-num">PROJECT // 002</span>
-          <span class="project-badge badge-pub">Published</span>
+          <span class="project-badge" style="background:rgba(251,191,36,.12);color:#b45309;border:1px solid rgba(251,191,36,.3);">In Progress</span>
         </div>
-        <h4>Emotion<em>Recognition</em></h4>
-        <p class="project-sub">Real-time facial emotion classifier — 72% accuracy</p>
+        <h4>Trace<em>Lit</em></h4>
+        <p class="project-sub">Open-source LLM agent observability platform</p>
         <ul class="project-bullets">
-          <li>Built real-time facial emotion classifier using CNN + Spatial Transformer Networks and OpenCV — <strong>72% accuracy</strong> across 7 emotion classes on FER-2013.</li>
-          <li>Published in IJIRSET (Vol. 9, Issue 11, Nov 2020) — peer-reviewed research on facial recognition systems.</li>
+          <li>Building an ingest SDK, trace storage pipeline, and waterfall replay UI for full LLM agent observability.</li>
+          <li>Building a serverless ingest pipeline on <strong>AWS SQS + Lambda + DynamoDB</strong> handling <strong>10k+ span events/min</strong>.</li>
+          <li>Implementing AI-powered failure analysis using Claude API — automatically surfaces root causes to reduce mean-time-to-debug.</li>
         </ul>
         <div class="project-stack">
-          <span class="stack-tag">Python</span><span class="stack-tag">CNN</span>
-          <span class="stack-tag">STN</span><span class="stack-tag">OpenCV</span><span class="stack-tag">FER-2013</span>
+          <span class="stack-tag">Next.js 14</span><span class="stack-tag">Node.js</span>
+          <span class="stack-tag">TypeScript</span><span class="stack-tag">Django</span>
+          <span class="stack-tag">AWS Lambda</span><span class="stack-tag">SQS</span>
+          <span class="stack-tag">DynamoDB</span><span class="stack-tag">Claude API</span>
         </div>
       </article>
     </div>
@@ -614,7 +659,7 @@ footer span { color:var(--teal); }
           <li>C# <span class="skill-sub">.NET</span></li>
           <li>TypeScript <span class="skill-sub">Web</span></li>
           <li>JavaScript <span class="skill-sub">Web</span></li>
-          <li>PHP <span class="skill-sub">Legacy</span></li>
+          <li>PHP <span class="skill-sub">Web</span></li>
         </ul>
       </div>
       <div class="skill-card fade-up">
@@ -638,25 +683,47 @@ footer span { color:var(--teal); }
         </div>
         <ul class="skill-items">
           <li>Temporal <span class="skill-sub">Workflows</span></li>
+          <li>Node.js <span class="skill-sub">Runtime</span></li>
+          <li>Django <span class="skill-sub">Python</span></li>
+          <li>Flask <span class="skill-sub">Python</span></li>
           <li>GraphQL <span class="skill-sub">API</span></li>
           <li>REST APIs <span class="skill-sub">—</span></li>
-          <li>Spring MVC <span class="skill-sub">JVM</span></li>
-          <li>Hibernate <span class="skill-sub">ORM</span></li>
-          <li>Flask <span class="skill-sub">Python</span></li>
+          <li>SSE <span class="skill-sub">Real-time</span></li>
         </ul>
       </div>
       <div class="skill-card fade-up">
         <div class="skill-card-header">
-          <div class="skill-card-icon" style="background:rgba(34,197,94,.1)">🏗️</div>
-          <h5>Infra &amp; Data</h5>
+          <div class="skill-card-icon" style="background:rgba(255,160,0,.12)">🤖</div>
+          <h5>AI / ML</h5>
+        </div>
+        <ul class="skill-items">
+          <li>Claude API <span class="skill-sub">Anthropic</span></li>
+          <li>Multi-agent <span class="skill-sub">Systems</span></li>
+          <li>LLM Integration <span class="skill-sub">Prod</span></li>
+        </ul>
+      </div>
+      <div class="skill-card fade-up">
+        <div class="skill-card-header">
+          <div class="skill-card-icon" style="background:rgba(34,197,94,.1)">🗄️</div>
+          <h5>Databases</h5>
+        </div>
+        <ul class="skill-items">
+          <li>Couchbase <span class="skill-sub">NoSQL</span></li>
+          <li>MySQL <span class="skill-sub">SQL</span></li>
+        </ul>
+      </div>
+      <div class="skill-card fade-up">
+        <div class="skill-card-header">
+          <div class="skill-card-icon" style="background:rgba(26,31,78,.07)">🏗️</div>
+          <h5>DevOps &amp; Tools</h5>
         </div>
         <ul class="skill-items">
           <li>Kubernetes <span class="skill-sub">Orchestration</span></li>
           <li>Docker <span class="skill-sub">Containers</span></li>
-          <li>Couchbase <span class="skill-sub">NoSQL</span></li>
-          <li>MySQL <span class="skill-sub">SQL</span></li>
+          <li>Git <span class="skill-sub">GitHub/GitLab</span></li>
           <li>Splunk <span class="skill-sub">Observability</span></li>
-          <li>Git <span class="skill-sub">VCS</span></li>
+          <li>Postman <span class="skill-sub">API</span></li>
+          <li>Jira <span class="skill-sub">PM</span></li>
         </ul>
       </div>
     </div>
@@ -767,7 +834,7 @@ footer span { color:var(--teal); }
 
 <footer>
   <div>© 2026 <span>Harsh Artwani</span> — Built with intent.</div>
-  <div>Dallas, TX · Last updated April 2026</div>
+  <div>Dallas, TX · Last updated May 2026</div>
 </footer>
 
 <script>
@@ -782,6 +849,17 @@ footer span { color:var(--teal); }
       if (t) { e.preventDefault(); t.scrollIntoView({ behavior:'smooth', block:'start' }); }
     });
   });
+
+  const hamburger = document.getElementById('hamburger');
+  const mobileMenu = document.getElementById('mobileMenu');
+  hamburger.addEventListener('click', () => {
+    hamburger.classList.toggle('open');
+    mobileMenu.classList.toggle('open');
+  });
+  function closeMobileMenu() {
+    hamburger.classList.remove('open');
+    mobileMenu.classList.remove('open');
+  }
 </script>
 </body>
 </html>
